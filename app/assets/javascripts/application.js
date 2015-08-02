@@ -11,5 +11,4 @@
 // about supported directives.
 //
 //= require angular
-//= require turbolinks
 //= require_tree .
