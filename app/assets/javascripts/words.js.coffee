@@ -72,7 +72,7 @@ WordsCtrl = ($scope, $http, $timeout, $modal) ->
     array
 
   $scope.newGame = ->
-    $scope.time = 5
+    $scope.time = 60
     $scope.score = 0
     $scope.newWord()
     $timeout($scope.timer, 1000)
