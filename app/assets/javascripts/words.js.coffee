@@ -1,11 +1,15 @@
-WordsCtrl = ($scope) ->
-  $scope.word = "hello".split("")
-  $scope.allLetters = "hello".split("")
+WordsCtrl = ($scope, $http, $timeout) ->
+  $scope.word = []
+  $scope.allLetters = []
   $scope.typedLetters = []
+  $scope.gameState = "new"
+  $scope.score = 0
+  $scope.time = 60
 
-  $scope.letters = "hello".split("")
+  $scope.letters = []
 
   $scope.handleLetter = (letter) ->
+    return if $scope.time == 0
     possibleLetters = $scope.allLetters.slice(0)
     for chr in $scope.typedLetters
       indexOfLetter = possibleLetters.indexOf(chr)
@@ -16,13 +20,56 @@ WordsCtrl = ($scope) ->
 
     $scope.typedLetters.push(letter)
     if $scope.typedLetters.length == $scope.allLetters.length
-      $scope.resetGuess()
+      if $scope.typedLetters.join('') == $scope.word.join('')
+        $scope.gameState = "won"
+      else
+        $scope.gameState = "lost"
+      $timeout($scope.resetGuess, 500)
     else
       $scope.letters = $scope.typedLetters.concat(possibleLetters)
 
   $scope.resetGuess = ->
+    if $scope.gameState == "lost"
+      $scope.resetWord()
+    else if $scope.gameState == "won"
+      $scope.score += 5
+      $scope.newWord()
+    $scope.gameState = "new"
+
+  $scope.resetWord = ->
     $scope.typedLetters = []
     $scope.letters = $scope.allLetters.slice(0)
 
+  $scope.newWord = ->
+    $http.get("http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=4&maxLength=6&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5")
+         .success((data) -> $scope.setWord(data.word))
 
-angular.module('app', []).controller('WordsCtrl', ['$scope', WordsCtrl])
+  $scope.setWord = (word) ->
+      $scope.word = word.toLowerCase().split("")
+      $scope.allLetters = $scope.shuffle($scope.word.slice(0))
+      $scope.typedLetters = []
+      $scope.letters = $scope.allLetters.slice(0)
+      $scope.gameState = "new"
+
+  $scope.timer = ->
+    return if $scope.time == 0
+    $scope.time -= 1
+    $timeout($scope.timer, 1000)
+
+  $scope.shuffle = (array) ->
+    i = array.length
+    while --i > 0
+        j = ~~(Math.random() * (i + 1))
+        t = array[j]
+        array[j] = array[i]
+        array[i] = t
+    array
+
+  $scope.newGame = ->
+    $scope.time = 60
+    $scope.newWord()
+    $timeout($scope.timer, 1000)
+
+  $scope.newGame()
+
+angular.module('app', []).controller('WordsCtrl', ['$scope', '$http', '$timeout', WordsCtrl])

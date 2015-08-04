@@ -1,7 +1,13 @@
 <div ng-controller="WordsCtrl" id="wordScrambler">
-  <ul>
-    <li ng-repeat="letter in letters track by $index">
+  <ul class="word">
+    <li class="letter" ng-repeat="letter in letters track by $index" ng-class="{highlighted: $index < typedLetters.length && gameState === 'new',
+                                                                                won: gameState === 'won',
+                                                                                lost: gameState === 'lost'}">
       {{letter}}
     </li>
   </ul>
+
+  <div class="game-info">
+    Time left: <span class="info">{{time}}</span> Score: <span class="info">{{score}}</span>
+  </div>
 </div>
