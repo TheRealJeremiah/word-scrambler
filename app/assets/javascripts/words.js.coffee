@@ -41,7 +41,7 @@ WordsCtrl = ($scope, $http, $timeout, $modal) ->
     $scope.letters = $scope.allLetters.slice(0)
 
   $scope.newWord = ->
-    $http.get("http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=4&maxLength=6&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5")
+    $http.get("https://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=4&maxLength=6&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5")
          .success((data) -> $scope.setWord(data.word))
 
   $scope.setWord = (word) ->
