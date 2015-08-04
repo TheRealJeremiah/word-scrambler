@@ -1,4 +1,4 @@
-WordsCtrl = ($scope, $http, $timeout) ->
+WordsCtrl = ($scope, $http, $timeout, $modal) ->
   $scope.word = []
   $scope.allLetters = []
   $scope.typedLetters = []
@@ -52,7 +52,9 @@ WordsCtrl = ($scope, $http, $timeout) ->
       $scope.gameState = "new"
 
   $scope.timer = ->
-    return if $scope.time == 0
+    if $scope.time == 0
+      $scope.openModal()
+      return
     $scope.time -= 1
     $timeout($scope.timer, 1000)
 
@@ -67,9 +69,33 @@ WordsCtrl = ($scope, $http, $timeout) ->
 
   $scope.newGame = ->
     $scope.time = 60
+    $scope.score = 0
     $scope.newWord()
     $timeout($scope.timer, 1000)
 
+  $scope.openModal = () ->
+    modalInstance = $modal.open(
+      animation: true
+      controller: 'ModalCtrl'
+      template: "<div class=\"modal-header\">
+            <h3 class=\"modal-title\">You scored {{score}} points!</h3>
+        </div>
+        <div class=\"modal-footer\">
+            <button class=\"btn btn-primary\" ng-click=\"ok()\">Play again!</button>
+        </div>"
+      resolve: {score: -> $scope.score}
+    )
+
+    modalInstance.result.then(-> $scope.newGame())
+
   $scope.newGame()
 
-angular.module('app', []).controller('WordsCtrl', ['$scope', '$http', '$timeout', WordsCtrl])
+ModalCtrl = ($scope, $modalInstance, score) ->
+  $scope.score = score
+  $scope.ok = ->
+    $modalInstance.close()
+    return
+
+
+angular.module('app', ['ui.bootstrap']).controller('WordsCtrl', ['$scope', '$http', '$timeout', '$modal', WordsCtrl])
+angular.module('ui.bootstrap').controller('ModalCtrl', ModalCtrl)
