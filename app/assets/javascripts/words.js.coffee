@@ -10,6 +10,9 @@ WordsCtrl = ($scope, $http, $timeout, $modal) ->
 
   $scope.handleLetter = (letter) ->
     return if $scope.time == 0
+    if letter == 'backspace'
+      $scope.typedLetters.pop()
+      return
     possibleLetters = $scope.allLetters.slice(0)
     for chr in $scope.typedLetters
       indexOfLetter = possibleLetters.indexOf(chr)
