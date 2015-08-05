@@ -46,8 +46,9 @@ WordsCtrl = ($scope, $http, $timeout, $modal) ->
   $scope.newWord = ->
     req = {
       method: 'GET'
-      url: 'https://wordsapiv1.p.mashape.com/words/?frequencymin=2.5&letterpattern=%5E%5Ba-z%5D*%24&lettersMax=6&lettersmin=4&random=true'
-      headers: {"X-Mashape-Key": "CZGUyo80scmsh2I2TyVX5aGINQCXp16IMwNjsnHuTuyEJYOrIc", "Accept": "application/json"}
+      url: 'https://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&minCorpusCount=75000&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=4&maxLength=7&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5'
+      # url: 'https://wordsapiv1.p.mashape.com/words/?frequencymin=6&letterpattern=%5E%5Ba-z%5D*%24&lettersMax=6&lettersmin=4&random=true'
+      headers: {"Accept": "application/json"} # {"X-Mashape-Key": "CZGUyo80scmsh2I2TyVX5aGINQCXp16IMwNjsnHuTuyEJYOrIc", "Accept": "application/json"}
     }
     $http(req).success((data) -> $scope.setWord(data.word))
 
